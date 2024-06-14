@@ -2,7 +2,7 @@
 home: true
 icon: home
 title: 大杂烩
-layout: BlogHome
+# layout: BlogHome
 heroImage: https://theme-hope-assets.vuejs.press/logo.svg
 bgImage: https://theme-hope-assets.vuejs.press/bg/6-light.svg
 bgImageDark: https://theme-hope-assets.vuejs.press/bg/6-dark.svg
