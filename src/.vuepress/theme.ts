@@ -3,11 +3,11 @@ import navbar from "./navbar.js";
 import sidebar from "./sidebar.js";
 
 export default hopeTheme({
-  hostname: "https://vuepress-theme-hope-docs-demo.netlify.app",
+  hostname: "https://yuhaoxiang.github.io/work-blog",
 
   author: {
     name: "yhx",
-    url: "https://mister-hope.com",
+    url: "/",
   },
 
   pageInfo: [
@@ -23,7 +23,7 @@ export default hopeTheme({
 
   logo: "https://pic4.zhimg.com/v2-b69d0496b77daf721c52fa64939a1dbf_b.jpg",
 
-  repo: "vuepress-theme-hope/vuepress-theme-hope",
+  repo: "https://github.com/YuHaoXiang/work-blog",
 
   docsDir: "src",
 
