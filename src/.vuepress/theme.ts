@@ -6,7 +6,7 @@ export default hopeTheme({
   hostname: "https://vuepress-theme-hope-docs-demo.netlify.app",
 
   author: {
-    name: "Mr.Hope",
+    name: "yhx",
     url: "https://mister-hope.com",
   },
 
@@ -21,7 +21,7 @@ export default hopeTheme({
   iconAssets: "//at.alicdn.com/t/font_2410206_vuzkjonf4s9.css",
 
 
-  logo: "https://theme-hope-assets.vuejs.press/logo.svg",
+  logo: "https://pic4.zhimg.com/v2-b69d0496b77daf721c52fa64939a1dbf_b.jpg",
 
   repo: "vuepress-theme-hope/vuepress-theme-hope",
 
@@ -29,12 +29,21 @@ export default hopeTheme({
 
   // 导航栏
   navbar,
-
+  navbarLayout: {
+    start: ["Brand"], center: [], end: ["Links","Language", "Repo", "Search"]
+  },
   // 侧边栏
   sidebar,
+  
+  blog: {
+    intro: "/intro.html",
+    medias: {
+      Email: "398972900@qq.com",
+    },
+  },
 
   // 页脚
-  footer: "默认页脚",
+  footer: '使用 <a href="https://theme-hope.vuejs.press/zh/" target="_blank">VuePress Theme Hope</a> 主题 | MIT 协议, 版权所有 © 2019-present Mr.Hope',
   displayFooter: true,
 
   // 加密配置
@@ -55,6 +64,9 @@ export default hopeTheme({
   // 在这里配置主题提供的插件
   plugins: {
     // 注意: 仅用于测试! 你必须自行生成并在生产环境中使用自己的评论服务
+    // blog: {
+    //   excerptLength: 0,
+    // },
     comment: {
       provider: "Giscus",
       repo: "vuepress-theme-hope/giscus-discussions",

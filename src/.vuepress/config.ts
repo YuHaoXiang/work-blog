@@ -5,8 +5,8 @@ export default defineUserConfig({
   base: "/work-blog/",
 
   lang: "zh-CN",
-  title: "文档演示",
-  description: "vuepress-theme-hope 的文档演示",
+  title: "大杂烩",
+  description: "工作中的一些记录。",
 
   theme,
 
