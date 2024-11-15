@@ -8,6 +8,13 @@ importers:
 
   .:
     dependencies:
+      pnpm:
+        specifier: ^9.13.1
+        version: 9.13.1
+      vuepress-theme-hope-template:
+        specifier: 'file:'
+        version: 'file:'
+    devDependencies:
       '@vuepress/bundler-vite':
         specifier: 2.0.0-rc.9
         version: 2.0.0-rc.9(@types/node@20.14.2)(sass@1.77.5)
@@ -1215,6 +1222,11 @@ packages:
     resolution: {integrity: sha512-40QW5YalBNfQo5yRYmiw7Yz6TKKVr3h6970B2YE+3fQpsWcrbj1PzJgxeJ19DRQjhMbKPIuMY8rFaXc8moolVw==}
     engines: {node: '>=10.13.0'}
 
+  pnpm@9.13.1:
+    resolution: {integrity: sha512-WsN1RYUcVexYUhtsKF22+Ej5PKcIib60FF9bQP4jTk6k+u5NrRKsXBOeSUN0xl2cOm7JollUN4+ihqJQ5o0vIA==}
+    engines: {node: '>=18.12'}
+    hasBin: true
+
   postcss-load-config@5.1.0:
     resolution: {integrity: sha512-G5AJ+IX0aD0dygOE0yFZQ/huFFMSNneyfp0e3/bT05a8OfPC5FUoZRPfGijUdGOJNMewJiwzcHJXFafFzeKFVA==}
     engines: {node: '>= 18'}
@@ -1535,6 +1547,9 @@ packages:
     engines: {node: '>=18.16.0', npm: '>=8', pnpm: '>=7', yarn: '>=2'}
     peerDependencies:
       vuepress: 2.0.0-rc.9
+
+  'vuepress-theme-hope-template@file:':
+    resolution: {directory: '', type: directory}
 
   vuepress-theme-hope@2.0.0-rc.36:
     resolution: {integrity: sha512-kMCmlwPw4S0P0LYnAulaT98L3Z2jD+A4bgQ93rfuCVxmfCJEUs99V6ms9iu/GZ8CqJC10anDqwfJ+SjHCs0V8g==}
@@ -2819,6 +2834,8 @@ snapshots:
 
   pngjs@5.0.0: {}
 
+  pnpm@9.13.1: {}
+
   postcss-load-config@5.1.0(postcss@8.4.38):
     dependencies:
       lilconfig: 3.1.2
@@ -3082,6 +3099,10 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - typescript
+
+  'vuepress-theme-hope-template@file:':
+    dependencies:
+      pnpm: 9.13.1
 
   vuepress-theme-hope@2.0.0-rc.36(markdown-it@14.1.0)(vuepress@2.0.0-rc.9(@vuepress/bundler-vite@2.0.0-rc.9(@types/node@20.14.2)(sass@1.77.5))(vue@3.4.28)):
     dependencies:
