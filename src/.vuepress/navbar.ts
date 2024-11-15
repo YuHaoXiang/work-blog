@@ -23,6 +23,7 @@ export default navbar([
     "linux/",
     "nginx/",
     "programming/",
+    "mysql/",
     "container/",
     ]
 

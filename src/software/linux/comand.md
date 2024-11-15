@@ -20,7 +20,7 @@ netstat -atunlp |grep 10010
 ## 添加用户
 ```bash
 openssl passwd -1 
-sudo useradd -s /bin/bash -d /home/yhx -m yhx -p '$1$vazWhjwT$P03LZFw5FkazWYLoIaPcz0'
+sudo useradd -s /bin/bash -d /home/yhx -m yhx -p '$1$LFF9VyfP$K6YKfqSFjRgrlHLTWE1DO.'
 ```
 ## alternatives修改命令链接
 ```bash
@@ -69,6 +69,61 @@ firewall-cmd --reload
 ```bash
 find 源文件路径 -type f -name '*.jpg' -exec mv {} 目标路径 \;
 ```
+
+## 找出占用CPU最多的进程
+```bash
+ps aux --sort=-%cpu | head -n 10
+```
+
+## 找出占用内存最多的进程
+```bash
+ps aux --sort=-%mem | head -n 10  # %mem是进程使用的物理内存百分比
+ps aux --sort=-rss | head -n 10  # 进程占用的实际内存大小（以KB为单位）
+
+top 然后 shift+M
+```
+
+
+## Cetenos 获取ip地址
+```bash
+ifconfig | grep -A 3 'eth0' | grep inet | grep -v inet6 | awk -F' ' '{print $2}' | awk '{sub(/addr:/,""); print}'
+
+``` 
+## dig 域名解析
+```
+dig @1.1.1.1 facebook.com
+```
+
+## truncate 
+```bash
+truncate <OPTION>... <FILE>...
+  -c, --no-create
+    不创建任何文件。
+  -o, --io-blocks
+    将 SIZE 视为 IO 块数而不是字节数。Linux 文件系统的 IO 块大小通过为 4096 字节。
+  -r, --reference=<RFILE>
+    以 RFILE 为基础尺寸。
+  -s, --size=<SIZE>
+    设置或调整文件大小为指定字节。
+    其中 SIZE 参数是一个整数和可选单位，如 10K（10*1024）。单位 K、M、G、T、P、E、Z、Y 都是 1024 的幂。KB,MB,… 为 1000 的幂。 也可以使用二进制前缀：KiB=K，MiB=M，以此类推。
+    SIZE 也可以添加前缀字符：‘+’ 扩展，‘-’ 减少，‘<’ 最多，‘>’ 至少，‘/’ 向下舍入为 SIZE 的倍数，‘%’ 向上舍入为 SIZE 的倍数。
+  --help
+    显示帮助信息并退出。
+  --version
+    显示版本信息并退出。
+ example: truncate -s 1G foo.txt
+```
+
+## jenkins 获取密匙
+在命令行脚本界面输入如下代码
+```java
+com.cloudbees.plugins.credentials.SystemCredentialsProvider.getInstance().getCredentials().forEach{
+  it.properties.each { prop, val ->
+    println(prop + ' = "' + val + '"')
+  }
+  println("-----------------------")
+}
+``` 
 
 ## curl
 

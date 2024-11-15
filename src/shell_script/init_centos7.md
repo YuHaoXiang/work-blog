@@ -334,3 +334,333 @@ main(){
 main
 
 ```
+
+
+```
+# vim:ft=sh
+
+#本文定义通用函数, 与业务逻辑无关的通用函数(任意任务均可使用)
+#所有函数, 返回值为1表示异常
+
+get_lan_ip  () {
+   #
+   ip addr | \
+       awk -F'[ /]+' '/inet/{
+               split($3, N, ".")
+               if ($3 ~ /^192.168/) {
+                   print $3
+               }
+               if (($3 ~ /^172/) && (N[2] >= 16) && (N[2] <= 31)) {
+                   print $3
+               }
+               if ($3 ~ /^10\./) {
+                   print $3
+               }
+          }'
+
+   return $?
+}
+
+CURR_PID=$$
+LAN_IP=$(get_lan_ip | head -1)
+if [ -z "$HASTTY" ]; then
+    HASTTY=$(ps -ef | awk -v P=$CURR_PID '$2==P && $6 == "?" {print 0}')
+fi
+
+emphasize () {
+   local timestamp=$(date +%Y%m%d-%H%M%S)
+   local level=INFO
+   local func_seq=$(echo ${FUNCNAME[@]} | sed 's/ /-/g')
+   local logfile=${LOG_FILE:=/tmp/bkc.log}
+
+   echo "[$(blue_echo $LAN_IP)]$timestamp $BASH_LINENO   $(bblue_echo $@)"
+   echo "[$(blue_echo $LAN_IP)]$timestamp $level|$BASH_LINENO|${func_seq} $@" >> $logfile
+
+   return 0
+}
+
+log () {
+   # 打印消息, 并记录到日志, 日志文件由 LOG_FILE 变量定义
+   local retval=$?
+   local timestamp=$(date +%Y%m%d-%H%M%S)
+   local level=INFO
+   local func_seq=$(echo ${FUNCNAME[@]} | sed 's/ /-/g')
+   local logfile=${LOG_FILE:=/tmp/bkc.log}
+
+   echo "[$(blue_echo $LAN_IP)]$timestamp $BASH_LINENO   $@"
+   echo "[$(blue_echo $LAN_IP)]$timestamp $level|$BASH_LINENO|${func_seq} $@" >>$logfile
+   return $retval
+}
+
+err () {
+   # 打印错误消息, 并返回非0
+   # 屏幕输出使用红色字体
+   local timestamp=$(date +%Y%m%d-%H%M%S)
+   local level=ERROR
+   local func_seq=$(echo ${FUNCNAME[@]} | sed 's/ /-/g')
+   local logfile=${LOG_FILE:=/tmp/bkc.log}
+
+   
+   echo "[$(red_echo $LAN_IP)]$timestamp $BASH_LINENO   $(red_echo $@)"
+   echo "[$(red_echo $LAN_IP)]$timestamp $level|$BASH_LINENO|${func_seq} $@" >> $logfile
+
+   return 1
+}
+
+warn () {
+   # 打印警告消息, 并返回0
+   # 屏幕输出使用黄色字体
+   local timestamp=$(date +%Y%m%d-%H%M%S)
+   local level=WARN
+   local func_seq=$(echo ${FUNCNAME[@]} | sed 's/ /-/g;')
+   local logfile=${LOG_FILE:=/tmp/bkc.log}
+
+   echo "[$(yellow_echo $LAN_IP)]$timestamp $BASH_LINENO   $(yellow_echo $@)"
+   echo "[$(yellow_echo $LAN_IP)]$timestamp $level|$BASH_LINENO|${func_seq} $@" >> $logfile
+   
+   return 0
+}
+
+fail () {
+   # 打印错误消息,并以非0值退出程序
+   # 参数1: 消息内容
+   # 参数2: 可选, 返回值, 若不提供默认返回1
+   local timestamp=$(date +%Y%m%d-%H%M%S)
+   local level=FATAL
+   local retval=${2:-1}
+   local func_seq=$(echo ${FUNCNAME[@]} | sed 's/ /-/g')
+   local logfile=${LOG_FILE:=/tmp/bkc.log}
+
+   echo "[$(red_echo $LAN_IP)]$timestamp $BASH_LINENO   $(red_echo $@)"
+   echo "[$(red_echo $LAN_IP)]$timestamp $level|$BASH_LINENO|${func_seq} $@" >> $logfile
+
+   exit $retval
+}
+
+ok () {
+   # 打印标准输出(绿色消息), 说明某个过程执行成功, 状态码为0
+   local timestamp=$(date +%Y%m%d-%H%M%S)
+   local level=INFO
+   local func_seq=$(echo ${FUNCNAME[@]} | sed 's/ /-/g')
+   local logfile=${LOG_FILE:=/tmp/bkc.log}
+
+   echo "[$(green_echo $LAN_IP)]$timestamp $BASH_LINENO   $(green_echo $@)"
+   echo "[$(green_echo $LAN_IP)]$timestamp $level|$BASH_LINENO|${func_seq} $@" >> $logfile
+   
+   return 0
+}
+
+assert () {
+    local check_ret=$?
+    local msg="$1"
+    local err="$2"
+
+    if [ $check_ret -eq 0 ]; then
+        ok "$msg"
+    else
+        fail "$err"
+    fi
+}
+
+wassert () {
+    local check_ret=$?
+    local msg="$1"
+    local err="$2"
+
+    if [ $check_ret -eq 0 ]; then
+        ok "$msg"
+    else
+        warn "$err"
+    fi
+}
+
+nassert () {
+    local check_ret=$?
+    local msg="$1"
+    local err="${2:-$1}"
+
+    if [ $check_ret -eq 0 ]; then
+        log "$msg.  $(green_echo OK)"
+    else
+        log "$err.  $(red_echo FAILED)"
+        exit 1
+    fi
+}
+
+step () {
+   # 打印步骤信息, 并记录当前步骤节点
+   # 输出使用带背景的红色
+   echo ""
+   l=$(( (70 - $(wc -c <<<"$@"))/2 ))
+   str="$(printf "%${l}s$@%${l}s" ' ' ' ')"
+   bblue_echo "$str"
+}
+
+syscmd_byos () {
+    local action=$1 
+    local name=$2
+
+    if which systemctl >/dev/null 2>&1; then
+        systemctl $action $name
+    else
+        service $name $action
+    fi
+}
+
+red_echo ()      { [ "$HASTTY" == 0 ] && echo "$@" || echo -e "\033[031;1m$@\033[0m"; }
+green_echo ()    { [ "$HASTTY" == 0 ] && echo "$@" || echo -e "\033[032;1m$@\033[0m"; }
+yellow_echo ()   { [ "$HASTTY" == 0 ] && echo "$@" || echo -e "\033[033;1m$@\033[0m"; }
+blue_echo ()     { [ "$HASTTY" == 0 ] && echo "$@" || echo -e "\033[034;1m$@\033[0m"; }
+purple_echo ()   { [ "$HASTTY" == 0 ] && echo "$@" || echo -e "\033[035;1m$@\033[0m"; }
+bred_echo ()     { [ "$HASTTY" == 0 ] && echo "$@" || echo -e "\033[041;1m$@\033[0m"; }
+bgreen_echo ()   { [ "$HASTTY" == 0 ] && echo "$@" || echo -e "\033[042;1m$@\033[0m"; }
+byellow_echo ()  { [ "$HASTTY" == 0 ] && echo "$@" || echo -e "\033[043;1m$@\033[0m"; }
+bblue_echo ()    { [ "$HASTTY" == 0 ] && echo "$@" || echo -e "\033[044;1m$@\033[0m"; }
+bpurple_echo ()  { [ "$HASTTY" == 0 ] && echo "$@" || echo -e "\033[045;1m$@\033[0m"; }
+bgreen_echo ()   { [ "$HASTTY" == 0 ] && echo "$@" || echo -e "\033[042;34;1m$@\033[0m"; }
+
+rcmd () {
+    # usage:
+    #   rcmd USER@HOST:PORT "command"
+    # 输出命令结果
+    # 记录执行情况到日志中
+    local rhost=$1; shift
+
+    #if echo "$rhost" | grep -q "@$LAN_IP$"; then
+    #    # 这不是一个安全的做法.
+    #    cd $CTRL_DIR
+    #    load_env
+    #    eval "$@"
+    #else
+       ssh $rhost "bash -lc 'source $CTRL_DIR/.rcmdrc; export HASTTY=1; $@'"
+    #fi
+}
+
+_rsync () {
+    # 安装部署,固定使用 root 执行文件传输
+    # 若是本机之间文件传输, 则去掉登陆验证步骤
+    opts=$(sed "s/root@$LAN_IP://" <<<"$@")
+    log ">> rsync $opts"
+    rsync $opts || fail "copy files to remote failed."
+}
+
+total_mem () {
+    free | awk '/Mem/{print int($2/1000/1000)}'
+}
+
+process_is_running () {
+    # 模糊匹配, 检测时输入更精确匹配进程的模式表达式
+    local pattern="$1"
+    
+    ps -ef | grep "$pattern" \
+           | grep -vE '(grep |bash -l)' \
+           | awk '{print $2;a++}END{if (a>0) {exit 0} else {exit 1}}'
+}
+
+process_paired () {
+    local pids=($@)
+
+    [ "${#pids[@]}" -ne 2 ] && return 1
+
+    local pattern1="$(echo ${pids[1]}  *${pids[0]})
+    local pattern2="$(echo ${pids[0]}  *${pids[1]})
+
+    if process_is_running "$pattern1" >/dev/null 2>&1 || \
+        process_is_running "$pattern2" >/dev/null 2>&1; then
+        if ps xao pid,ppid | grep -w ${pids[0]} >/dev/null 2>&1 || \
+            ps xao pid,ppid | grep -w ${pids[1]} >/dev/null 2>&1; then
+            return 0
+        fi
+    fi
+
+    return 1
+}
+
+random_string () {
+    local length=${1:-51}
+
+    python -c "import random,string; print ''.join(random.sample(string.ascii_letters + '$%&()+,-.:<=?@[]_{}' + string.digits, $length))"
+}
+
+check_ns_alive () {
+    local ns=$1
+
+    [ ! -z "$(dig +short $ns)" ]
+}
+
+wait_ns_alive () {
+    local timeout=23
+    local ns=$1
+
+    for i in $(seq 1 $timeout); do
+        if check_ns_alive "$ns"; then
+            return 0
+        fi
+        sleep 1
+    done
+
+    return 1
+}
+
+check_port_alive () {
+    local port=$1
+
+    lsof -i:$port -sTCP:LISTEN 1>/dev/null 2>&1
+
+    return $?
+}
+
+wait_port_alive () {
+    local port=$1
+    local timeout=${2:-10}
+
+    for i in $(seq $timeout); do
+        check_port_alive $port && return 0
+        sleep 1
+    done
+    return 1
+}
+
+wait_for_done_bylog () {
+	local logfile="$1"
+	local keywords="$2"
+	local timeout=${3:-60}
+
+    start_line=$(wc -l <$logfile)
+
+	for i in $(seq $timeout); do
+		tail -n +$((start_line++)) $logfile | grep -q "$keywords"
+		if [ $? -ne 0 ]; then
+			sleep 1
+			start_line=$(wc -l $logfile | cut -d ' ' -f1)
+		else
+			return 0
+		fi
+	done
+
+	return 1
+}
+
+check_agreement () {
+    cd $CTRL_DIR
+
+    if [ ! -f .agreed ]; then
+        read -p "$(< agreement.txt)" reply
+        if [ "$reply" != "yes" ]; then
+            red_echo "Abort"
+            return 1
+        else
+            touch .agreed
+        fi
+    fi
+
+    return 0
+}
+
+replace_control_script () {
+    local module=$1
+    local project=$2
+    local location=$3
+}
+
+```

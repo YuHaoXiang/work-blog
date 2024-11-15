@@ -17,10 +17,12 @@ export default sidebar({
     "linux/",
     "nginx/",
     "programming/",
+    "mysql/",
     
   ],
   "/software/git/": "structure",
   "/software/linux/": "structure",
+  "/software/mysql/": "structure",
   "/software/nginx/": "structure",
   "/software/programming/": "structure",
   "/software/container/": "structure",
