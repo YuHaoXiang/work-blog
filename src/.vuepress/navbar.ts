@@ -25,6 +25,7 @@ export default navbar([
     "programming/",
     "mysql/",
     "container/",
+    "jenkins/",
     ]
 
   },

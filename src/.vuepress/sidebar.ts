@@ -18,6 +18,8 @@ export default sidebar({
     "nginx/",
     "programming/",
     "mysql/",
+    "container/",
+    "jenkins/",
     
   ],
   "/software/git/": "structure",
@@ -26,5 +28,6 @@ export default sidebar({
   "/software/nginx/": "structure",
   "/software/programming/": "structure",
   "/software/container/": "structure",
+  "/software/jenkins/": "structure",
   "/shell_script/": "structure",
 });

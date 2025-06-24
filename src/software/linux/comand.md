@@ -127,4 +127,22 @@ com.cloudbees.plugins.credentials.SystemCredentialsProvider.getInstance().getCre
 
 ## curl
 
-## nc
+## nc传输文件
+### 发送方
+如果你要发送一个文件，首先确定你的nc版本支持-p参数来指定监听端口。然后，在发送方机器上运行如下命令：
+```bash
+cat 文件名 | nc -l -p 端口号
+```
+或者直接指定要发送的文件：
+```bash
+nc -l -p 端口号 < 文件名
+```
+### 接收方
+
+```bash
+nc 发送方_IP地址 端口号 > 文件名
+```
+或者如果你想要将接收到的内容直接保存为文件，可以这样写：
+```bash
+nc 发送方_IP地址 端口号 > 输出文件名
+```
