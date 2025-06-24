@@ -26,12 +26,21 @@ https://mirrors.huaweicloud.com/jenkins/updates/dynamic-stable-2.462.1/update-ce
 
 ## jenkins权限配置错误导致登录403、页面空白或者UI只展示报错页面
 找到jenkins的config.xml文件
-1. ```<authorizationStrategy class="hudson.security.AuthorizationStrategy$Unsecured"/>```
-这个权限对应"任何用户可以做任何事(没有任何限制)"
-2. ```<authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy"/>```
-这个权限对应"登录用户可以做任何事"
-3. ```<authorizationStrategy class="hudson.security.GlobalMatrixAuthorizationStrategy">
+1. 这个权限对应"任何用户可以做任何事(没有任何限制)"
+```xml
+<authorizationStrategy class="hudson.security.AuthorizationStrategy$Unsecured"/>
+```
+
+2. 这个权限对应"登录用户可以做任何"
+```xml
+<authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy"/>
+```
+
+3. 这个权限对应 test用户可以是管理员、打标签权限
+```xml
+<authorizationStrategy class="hudson.security.GlobalMatrixAuthorizationStrategy">
     <permission>hudson.model.Hudson.Administer:test</permission>
     <permission>hudson.scm.SCM.Tag:test</permission>
-  </authorizationStrategy>```
-这个权限对应 test用户可以是管理员、打标签权限。
+</authorizationStrategy>
+```
+
