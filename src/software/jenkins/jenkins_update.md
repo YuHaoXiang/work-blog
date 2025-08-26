@@ -30,12 +30,10 @@ https://mirrors.huaweicloud.com/jenkins/updates/dynamic-stable-2.462.1/update-ce
 ```xml
 <authorizationStrategy class="hudson.security.AuthorizationStrategy$Unsecured"/>
 ```
-
 2. 这个权限对应"登录用户可以做任何"
 ```xml
 <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy"/>
 ```
-
 3. 这个权限对应 test用户可以是管理员、打标签权限
 ```xml
 <authorizationStrategy class="hudson.security.GlobalMatrixAuthorizationStrategy">
