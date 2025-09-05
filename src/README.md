@@ -18,7 +18,7 @@ actions:
     type: primary
 
 features:
-  - title: 未分类
+  - title: 零散记录
     icon: computer
     details: 时不时要看看的
     link: /work/
