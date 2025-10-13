@@ -1,5 +1,5 @@
 ---
-title: 未分类
+title: 零散记录
 index: false
 icon: computer
 category:
