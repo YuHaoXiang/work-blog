@@ -9,6 +9,11 @@ export default navbar([
     link: "shell_script/",
   },
   {
+    text: "计算机网络",
+    icon: "network",
+    link: "network/",
+  },
+  {
     text: "软件教程",
     icon: "software",
     prefix: "/software/",
@@ -24,8 +29,10 @@ export default navbar([
     "nginx/",
     "programming/",
     "mysql/",
-    "container/",
-    "jenkins/",
+    "docker/",
+    "k8s/",
+    "ci-cd/",
+    "performance/",
     ]
 
   },
